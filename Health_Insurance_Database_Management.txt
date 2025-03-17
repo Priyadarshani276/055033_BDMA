@@ -1,0 +1,179 @@
+Project 2- Health Insurance
+
+Codes:
+
+Table Creation
+-- Customer Information Table
+CREATE TABLE Customers (
+    CustomerID INT PRIMARY KEY AUTO_INCREMENT,
+    FirstName VARCHAR(100),
+    LastName VARCHAR(100),
+    DOB DATE,
+    PhoneNumber VARCHAR(15),
+    Email VARCHAR(100)
+);
+
+-- Policies Table
+CREATE TABLE Policies (
+    PolicyID INT PRIMARY KEY AUTO_INCREMENT,
+    CustomerID INT,
+    PolicyType VARCHAR(50),
+    StartDate DATE,
+    EndDate DATE,
+    PremiumAmount DECIMAL(10, 2),
+    FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID)
+);
+
+-- Claims Table
+CREATE TABLE Claims (
+    ClaimID INT PRIMARY KEY AUTO_INCREMENT,
+    PolicyID INT,
+    ClaimDate DATE,
+    ClaimAmount DECIMAL(10, 2),
+    ClaimStatus VARCHAR(20),
+    FOREIGN KEY (PolicyID) REFERENCES Policies(PolicyID)
+);
+
+-- Payments Table
+CREATE TABLE Payments (
+    PaymentID INT PRIMARY KEY AUTO_INCREMENT,
+    CustomerID INT,
+    PaymentDate DATE,
+    PaymentAmount DECIMAL(10, 2),
+    PaymentMethod VARCHAR(50),
+    FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID)
+);
+
+-- Hospitals Table
+CREATE TABLE Hospitals (
+    HospitalID INT PRIMARY KEY AUTO_INCREMENT,
+    HospitalName VARCHAR(100),
+    Address VARCHAR(255),
+    PhoneNumber VARCHAR(15)
+);
+
+-- Hospitalizations Table
+CREATE TABLE Hospitalizations (
+    HospitalizationID INT PRIMARY KEY AUTO_INCREMENT,
+    CustomerID INT,
+    HospitalID INT,
+    AdmissionDate DATE,
+    DischargeDate DATE,
+    TotalCost DECIMAL(10, 2),
+    FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID),
+    FOREIGN KEY (HospitalID) REFERENCES Hospitals(HospitalID)
+);
+
+-- Doctors Table
+CREATE TABLE Doctors (
+    DoctorID INT PRIMARY KEY AUTO_INCREMENT,
+    DoctorName VARCHAR(100),
+    Specialty VARCHAR(50),
+    PhoneNumber VARCHAR(15),
+    HospitalID INT,
+    FOREIGN KEY (HospitalID) REFERENCES Hospitals(HospitalID)
+);
+
+-- Treatments Table
+CREATE TABLE Treatments (
+    TreatmentID INT PRIMARY KEY AUTO_INCREMENT,
+    HospitalizationID INT,
+    DoctorID INT,
+    TreatmentDescription TEXT,
+    TreatmentCost DECIMAL(10, 2),
+    FOREIGN KEY (HospitalizationID) REFERENCES Hospitalizations(HospitalizationID),
+    FOREIGN KEY (DoctorID) REFERENCES Doctors(DoctorID)
+);
+
+Insert Queries
+-- Insert data into Customers table
+INSERT INTO Customers (FirstName, LastName, DOB, PhoneNumber, Email)
+VALUES 
+('John', 'Doe', '1980-05-15', '1234567890', 'john.doe@example.com'),
+('Jane', 'Smith', '1990-07-22', '0987654321', 'jane.smith@example.com'),
+('Emily', 'Davis', '1975-09-10', '1122334455', 'emily.davis@example.com'),
+('Michael', 'Brown', '1985-12-05', '6677889900', 'michael.brown@example.com'),
+('Sarah', 'Wilson', '1995-03-30', '4455667788', 'sarah.wilson@example.com');
+
+-- Insert data into Policies table
+INSERT INTO Policies (CustomerID, PolicyType, StartDate, EndDate, PremiumAmount)
+VALUES 
+(1, 'Health Insurance', '2023-01-01', '2024-01-01', 12000.00),
+(2, 'Health Insurance', '2023-02-15', '2024-02-15', 15000.00),
+(3, 'Health Insurance', '2023-03-10', '2024-03-10', 13000.00),
+(4, 'Health Insurance', '2023-04-25', '2024-04-25', 11000.00),
+(5, 'Health Insurance', '2023-05-05', '2024-05-05', 14000.00);
+
+-- Insert data into Claims table
+INSERT INTO Claims (PolicyID, ClaimDate, ClaimAmount, ClaimStatus)
+VALUES 
+(1, '2023-06-15', 5000.00, 'Approved'),
+(2, '2023-07-20', 10000.00, 'Pending'),
+(3, '2023-08-05', 7000.00, 'Rejected'),
+(4, '2023-09-10', 3000.00, 'Approved'),
+(5, '2023-10-15', 6000.00, 'Pending');
+
+-- Insert data into Payments table
+INSERT INTO Payments (CustomerID, PaymentDate, PaymentAmount, PaymentMethod)
+VALUES 
+(1, '2023-01-01', 12000.00, 'Credit Card'),
+(2, '2023-02-15', 15000.00, 'Debit Card'),
+(3, '2023-03-10', 13000.00, 'Net Banking'),
+(4, '2023-04-25', 11000.00, 'UPI'),
+(5, '2023-05-05', 14000.00, 'Credit Card');
+
+-- Insert data into Hospitals table
+INSERT INTO Hospitals (HospitalName, Address, PhoneNumber)
+VALUES 
+('City Hospital', '123 Main St', '5551234567'),
+('Green Valley Hospital', '456 Elm St', '5559876543'),
+('Sunshine Hospital', '789 Oak St', '5554567890'),
+('Mountain View Hospital', '321 Pine St', '5556781234'),
+('Riverdale Hospital', '654 Maple St', '5557890123');
+
+-- Insert data into Hospitalizations table
+INSERT INTO Hospitalizations (CustomerID, HospitalID, AdmissionDate, DischargeDate, TotalCost)
+VALUES 
+(1, 1, '2023-06-10', '2023-06-15', 20000.00),
+(2, 2, '2023-07-15', '2023-07-20', 30000.00),
+(3, 3, '2023-08-01', '2023-08-05', 25000.00),
+(4, 4, '2023-09-05', '2023-09-10', 15000.00),
+(5, 5, '2023-10-10', '2023-10-15', 35000.00);
+
+-- Insert data into Doctors table
+INSERT INTO Doctors (DoctorName, Specialty, PhoneNumber, HospitalID)
+VALUES 
+('Dr. Smith', 'Cardiology', '5551112222', 1),
+('Dr. Johnson', 'Orthopedics', '5553334444', 2),
+('Dr. Williams', 'Neurology', '5555556666', 3),
+('Dr. Brown', 'Pediatrics', '5557778888', 4),
+('Dr. Jones', 'General Medicine', '5559990000', 5);
+
+-- Insert data into Treatments table
+INSERT INTO Treatments (HospitalizationID, DoctorID, TreatmentDescription, TreatmentCost)
+VALUES 
+(1, 1, 'Heart surgery', 15000.00),
+(2, 2, 'Hip replacement', 20000.00),
+(3, 3, 'Brain scan', 10000.00),
+(4, 4, 'Childbirth', 8000.00),
+(5, 5, 'General checkup', 5000.00);
+
+
+
+Permissions
+-- Grant access privileges to the policy manager
+GRANT SELECT, INSERT, UPDATE, DELETE ON project.Policies TO 'policy_manager'@'localhost';
+GRANT SELECT, INSERT, UPDATE, DELETE ON project.Claims TO 'policy_manager'@'localhost';
+
+-- Grant access privileges to the customer support team
+GRANT SELECT, INSERT, UPDATE ON project.Customers TO 'customer_support'@'localhost';
+GRANT SELECT ON project.Payments TO 'customer_support'@'localhost';
+
+-- Grant access privileges to the hospital administrator
+GRANT SELECT, INSERT, UPDATE ON project.Hospitals TO 'hospital_admin'@'localhost';
+GRANT SELECT, INSERT, UPDATE ON project.Hospitalizations TO 'hospital_admin'@'localhost';
+
+-- Grant access privileges to the medical staff
+GRANT SELECT ON project.Doctors TO 'medical_staff'@'localhost';
+GRANT SELECT, INSERT ON project.Treatments TO 'medical_staff'@'localhost';
+
